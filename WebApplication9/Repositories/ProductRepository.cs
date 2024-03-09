@@ -24,7 +24,7 @@ public class ProductRepository: IProductRepository
         }
     }
 
-    public async Task<Product?> GetProduct(int id)
+    public async Task<Product> GetProduct(int id)
     {
         using (var connection = _connection.CreateConnection())
         {
