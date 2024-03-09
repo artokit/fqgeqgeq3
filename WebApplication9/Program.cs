@@ -14,6 +14,7 @@ builder.Services.AddSingleton<ConnectionDatabase>(_ => new ConnectionDatabase(co
 
 builder.Services.AddTransient<IStoreRepository, StoreRepository>();
 builder.Services.AddTransient<StoreService>();
+builder.Services.AddTransient<IProductRepository, ProductRepository>();
 
 builder.Services.AddFluentMigratorCore().ConfigureRunner(rb => rb.AddPostgres().WithGlobalConnectionString(connectionString).ScanIn(Assembly.GetExecutingAssembly()).For.Migrations()).AddLogging(rb => rb.AddFluentMigratorConsole()).BuildServiceProvider(false);
 
