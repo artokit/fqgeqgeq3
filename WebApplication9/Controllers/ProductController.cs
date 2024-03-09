@@ -33,15 +33,10 @@ public class ProductController:ControllerBase
     }
 
     [HttpPost("add")]
-    public async Task<IActionResult> Add(int id, ProductDTO productDto)
+    public async Task<IActionResult> Add(ProductDTO productDto)
     {
-        if (await _productRepository.GetProduct(id) == null)
-        {
-            _productRepository.Add(productDto);
-            return Ok();
-        }
-        
-        return NotFound();
+        _productRepository.Add(productDto);
+        return Ok();
     }
 
     [HttpPut("update/{id}")]

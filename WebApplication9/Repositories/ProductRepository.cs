@@ -28,7 +28,7 @@ public class ProductRepository: IProductRepository
     {
         using (var connection = _connection.CreateConnection())
         {
-            return await connection.QueryFirstOrDefaultAsync<Product>("SELECT * FROM product WHERE id = @id");
+            return await connection.QueryFirstOrDefaultAsync<Product>("SELECT * FROM products WHERE id = @id");
         }
     }
 
@@ -37,7 +37,7 @@ public class ProductRepository: IProductRepository
         using (var connection = _connection.CreateConnection())
         {
             await connection.QueryAsync(
-                "INSERT INTO products (name, description, category, price) VALUES (@name, @description, @category, @price)");
+                "INSERT INTO products (name, description, category, price) VALUES (@name, @description, @category, @price)",product);
         }
     }
 
@@ -45,7 +45,7 @@ public class ProductRepository: IProductRepository
     {
         using (var connection = _connection.CreateConnection())
         {
-            await connection.QueryAsync("UPDATE products SET name = @name, description = @description, category = @category, price = @price WHERE id = @id");
+            await connection.QueryAsync("UPDATE products SET name = @name, description = @description, category = @category, price = @price WHERE id = @id", productDto);
         }
     }
 
