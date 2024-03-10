@@ -6,30 +6,22 @@ namespace WebApplication9.Controllers;
 
 [ApiController]
 [Route("product")]
-public class ProductController:ControllerBase
+[Produces("application/json")]
+public class ProductController(IProductRepository productRepository) : ControllerBase
 {
-    private IProductRepository _productRepository;
-
-    public ProductController(IProductRepository productRepository)
-    {
-        _productRepository = productRepository;
-    }
+    private IProductRepository _productRepository = productRepository;
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll(int offset, int count)
     {
-        return Ok(await _productRepository.GetAll());
+        return Ok(await _productRepository.GetAll(offset, count));
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(int id)
     {
-        if (await _productRepository.GetProduct(id) != null)
-        {
-            return Ok(await _productRepository.GetProduct(id));
-        }
-
-        return NotFound();
+        var res = await _productRepository.GetProduct(id);
+        return (res is null) ? NotFound() : Ok(res);
     }
 
     [HttpPost("add")]

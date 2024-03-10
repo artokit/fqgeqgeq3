@@ -1,10 +1,10 @@
-namespace WebApplication9.Migrations;
+namespace WebApplication9.Models;
 
 public class Product
 {
-    public int id { get; set; }
-    public string name { get; set; }
-    public string description { get; set; }
-    public string category { get; set; }
-    public float price { get; set; }
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public string Category { get; set; }
+    public float Price { get; set; }
 }

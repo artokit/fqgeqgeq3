@@ -1,8 +1,7 @@
-using System.Data.Common;
 using Dapper;
 using WebApplication9.Domain;
 using WebApplication9.DTO;
-using WebApplication9.Migrations;
+using WebApplication9.Models;
 using WebApplication9.Repositories.Interfaces;
 
 namespace WebApplication9.Repositories;
@@ -16,19 +15,31 @@ public class ProductRepository: IProductRepository
         _connection = connection;
     }
 
-    public async Task<List<Product>> GetAll()
+    public async Task<List<Product>?> GetAll(int offset, int count)
     {
         using (var connection = _connection.CreateConnection())
         {
-            return (await connection.QueryAsync<Product>("SELECT * FROM products")).ToList();
+            var res = (await connection.QueryAsync<Product>("SELECT * FROM products ORDER BY id")).ToList();
+
+            if (res.Count - offset < 0)
+            {
+                return null;
+            }
+            
+            if (res.Count < offset + count)
+            {
+                return res.Slice(offset, res.Count - offset);
+            }
+            
+            return res.Slice(offset, count);
         }
     }
 
-    public async Task<Product> GetProduct(int id)
+    public async Task<Product?> GetProduct(int id)
     {
         using (var connection = _connection.CreateConnection())
         {
-            return await connection.QueryFirstOrDefaultAsync<Product>("SELECT * FROM products WHERE id = @id");
+            return await connection.QueryFirstOrDefaultAsync<Product>("SELECT * FROM products WHERE id = @id", id);
         }
     }
 
@@ -37,7 +48,7 @@ public class ProductRepository: IProductRepository
         using (var connection = _connection.CreateConnection())
         {
             await connection.QueryAsync(
-                "INSERT INTO products (name, description, category, price) VALUES (@name, @description, @category, @price)",product);
+                "INSERT INTO products (name, description, category, price) VALUES (@name, @description, @category, @price)", new {product.name, product.description, product.category, product.price});
         }
     }
 
