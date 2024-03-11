@@ -6,7 +6,7 @@ using WebApplication9.Repositories.Interfaces;
 
 namespace WebApplication9.Repositories;
 
-public class ProductRepository: IProductRepository
+public class ProductRepository : IProductRepository
 {
     private ConnectionDatabase _connection;
 
@@ -25,12 +25,12 @@ public class ProductRepository: IProductRepository
             {
                 return null;
             }
-            
+
             if (res.Count < offset + count)
             {
                 return res.Slice(offset, res.Count - offset);
             }
-            
+
             return res.Slice(offset, count);
         }
     }
@@ -39,7 +39,8 @@ public class ProductRepository: IProductRepository
     {
         using (var connection = _connection.CreateConnection())
         {
-            return await connection.QueryFirstOrDefaultAsync<Product>("SELECT * FROM products WHERE id = @id", new {id});
+            return await connection.QueryFirstOrDefaultAsync<Product>("SELECT * FROM products WHERE id = @id",
+                new { id });
         }
     }
 
@@ -59,16 +60,16 @@ public class ProductRepository: IProductRepository
         using (var connection = _connection.CreateConnection())
         {
             await connection.QueryAsync(
-                    "UPDATE products SET name = @Name, description = @Description, category = @Category, price = @Price WHERE id = @Id", 
-                    new
-                    {
-                        Name = productDto.Name ?? product.name,
-                        Description = productDto.Description ?? product.description,
-                        category = productDto.Category ?? product.category,
-                        Price = productDto.Price ?? product.price,
-                        Id = product.id
-                    }
-                );
+                "UPDATE products SET name = @Name, description = @Description, category = @Category, price = @Price WHERE id = @Id",
+                new
+                {
+                    Name = productDto.Name ?? product.name,
+                    Description = productDto.Description ?? product.description,
+                    category = productDto.Category ?? product.category,
+                    Price = productDto.Price ?? product.price,
+                    Id = product.id
+                }
+            );
         }
     }
 
@@ -85,8 +86,8 @@ public class ProductRepository: IProductRepository
         using (var connection = _connection.CreateConnection())
         {
             await connection.QueryAsync(
-                "UPDATE products SET file_name = @fileName where id = @productId", 
-                new {fileName, productId}
+                "UPDATE products SET file_name = @fileName where id = @productId",
+                new { fileName, productId }
             );
             return true;
         }
