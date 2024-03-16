@@ -2,9 +2,8 @@ namespace WebApplication9.DTO;
 
 public class ProductDTO
 {
-    public string? Name { get; set; }
-    public string? Description { get; set; }
-    public string? Category { get; set; }
-    public float? Price { get; set; }
-    public string? FileName { get; set; }
+    public string name { get; set; }
+    public string description { get; set; }
+    public string category { get; set; }
+    public float price { get; set; }
 }

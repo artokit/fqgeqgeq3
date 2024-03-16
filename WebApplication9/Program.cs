@@ -1,5 +1,8 @@
 using System.Reflection;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using FluentMigrator.Runner;
+using Microsoft.IdentityModel.Tokens;
+using WebApplication9.Common;
 using WebApplication9.Domain;
 using WebApplication9.Repositories;
 using WebApplication9.Repositories.Interfaces;
@@ -15,8 +18,23 @@ builder.Services.AddSingleton<ConnectionDatabase>(_ => new ConnectionDatabase(co
 builder.Services.AddTransient<IStoreRepository, StoreRepository>();
 builder.Services.AddTransient<StoreService>();
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
-
+builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddTransient<UserService>();
+builder.Services.AddTransient<AuthService>();
 builder.Services.AddFluentMigratorCore().ConfigureRunner(rb => rb.AddPostgres().WithGlobalConnectionString(connectionString).ScanIn(Assembly.GetExecutingAssembly()).For.Migrations()).AddLogging(rb => rb.AddFluentMigratorConsole()).BuildServiceProvider(false);
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidIssuer = AuthOptions.Issuer,
+        ValidAudience = AuthOptions.Audience,
+        ValidateLifetime = true,
+        IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+        ValidateIssuerSigningKey = true
+    };
+});
 
 var app = builder.Build();
 

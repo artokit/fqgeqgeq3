@@ -6,74 +6,49 @@ namespace WebApplication9.Controllers;
 
 [ApiController]
 [Route("product")]
-public class ProductController : Controller
+public class ProductController:ControllerBase
 {
     private IProductRepository _productRepository;
-    private IWebHostEnvironment _apiEnvironment;
-    
-    public ProductController(IProductRepository productRepository, IWebHostEnvironment apiEnvironment)
+
+    public ProductController(IProductRepository productRepository)
     {
         _productRepository = productRepository;
-        _apiEnvironment = apiEnvironment;
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll(int offset, int count)
+    public async Task<IActionResult> GetAll()
     {
-        if (count > 30)
-        {
-            return BadRequest("Не дохуя ли ?");
-        }
-        
-        return Ok(await _productRepository.GetAll(offset, count));
+        return Ok(await _productRepository.GetAll());
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(int id)
     {
-        var res = await _productRepository.GetProduct(id);
-        return (res is null) ? NotFound() : Ok(res);
+        if (await _productRepository.GetProduct(id) != null)
+        {
+            return Ok(await _productRepository.GetProduct(id));
+        }
+
+        return NotFound();
     }
 
     [HttpPost("add")]
-    public async Task<IActionResult> Add(CreateProductDTO product)
+    public async Task<IActionResult> Add(ProductDTO productDto)
     {
-        _productRepository.Add(product);
+        _productRepository.Add(productDto);
         return Ok();
-    }
-
-    [HttpPost("upload_photo")]
-    public async Task<ActionResult> UploadPhoto(int productId, IFormFile file)
-    {
-        if (await _productRepository.GetProduct(productId) is null)
-        {
-            return NotFound();
-        }
-        
-        string path = "/Files/" + file.FileName;
-        using (var fileStream = new FileStream(_apiEnvironment.WebRootPath + path, FileMode.Create))
-        {
-            await file.CopyToAsync(fileStream);
-        }
-        
-        await _productRepository.AddPhoto(productId, file.FileName);
-        return Ok();
-        
     }
 
     [HttpPut("update/{id}")]
     public async Task<IActionResult> Update(int id, ProductDTO productDto)
     {
-        var product = await _productRepository.GetProduct(id);
-        
-        if (product == null)
+        if (await _productRepository.GetProduct(id) != null)
         {
-            return NotFound();
+            _productRepository.Update(id, productDto);
+            return Ok();
         }
-        
-        _productRepository.Update(product, productDto);
-        return Ok();
-        
+
+        return NotFound();
     }
 
     [HttpDelete("delete/{id}")]

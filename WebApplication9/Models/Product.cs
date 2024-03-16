@@ -1,4 +1,4 @@
-namespace WebApplication9.Models;
+namespace WebApplication9.Migrations;
 
 public class Product
 {
@@ -7,5 +7,4 @@ public class Product
     public string description { get; set; }
     public string category { get; set; }
     public float price { get; set; }
-    public string? file_name { get; set; }
 }

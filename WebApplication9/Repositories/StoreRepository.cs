@@ -2,7 +2,6 @@ using Dapper;
 using WebApplication9.Domain;
 using WebApplication9.DTO;
 using WebApplication9.Migrations;
-using WebApplication9.Models;
 using WebApplication9.Repositories.Interfaces;
 namespace WebApplication9.Repositories;
 

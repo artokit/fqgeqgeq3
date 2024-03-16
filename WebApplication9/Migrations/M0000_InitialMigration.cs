@@ -8,11 +8,10 @@ public class M0000_InitialMigration : Migration
     {
         Create.Table("products")
             .WithColumn("id").AsInt64().PrimaryKey().Identity()
-            .WithColumn("name").AsString().NotNullable()
-            .WithColumn("description").AsString().NotNullable()
-            .WithColumn("category").AsString().NotNullable()
-            .WithColumn("price").AsDouble().NotNullable()
-            .WithColumn("file_name").AsString().Nullable();
+            .WithColumn("name").AsString()
+            .WithColumn("description").AsString()
+            .WithColumn("category").AsString()
+            .WithColumn("price").AsDouble();
     }
 
     public override void Down()
