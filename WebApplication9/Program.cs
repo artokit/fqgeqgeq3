@@ -21,7 +21,9 @@ builder.Services.AddTransient<IProductRepository, ProductRepository>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<UserService>();
 builder.Services.AddTransient<AuthService>();
-builder.Services.AddFluentMigratorCore().ConfigureRunner(rb => rb.AddPostgres().WithGlobalConnectionString(connectionString).ScanIn(Assembly.GetExecutingAssembly()).For.Migrations()).AddLogging(rb => rb.AddFluentMigratorConsole()).BuildServiceProvider(false);
+builder.Services.AddFluentMigratorCore()
+    .ConfigureRunner(rb => rb.AddPostgres().WithGlobalConnectionString(connectionString).ScanIn(Assembly.GetExecutingAssembly()).For.Migrations())
+    .AddLogging(rb => rb.AddFluentMigratorConsole());
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
@@ -40,10 +42,13 @@ var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
+app.UseHttpsRedirection();
+app.MapControllers();
+app.UseAuthentication();
+app.UseAuthorization();
+
 var service = app.Services.CreateScope().ServiceProvider;
 var runner = service.GetRequiredService<IMigrationRunner>();
 runner.MigrateUp();
-
-app.MapControllers();
 
 app.Run();

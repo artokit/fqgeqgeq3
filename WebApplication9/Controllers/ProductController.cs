@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication9.DTO;
 using WebApplication9.Repositories.Interfaces;
@@ -14,7 +15,7 @@ public class ProductController:ControllerBase
     {
         _productRepository = productRepository;
     }
-
+    
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
@@ -31,14 +32,16 @@ public class ProductController:ControllerBase
 
         return NotFound();
     }
-
+    
+    [Authorize]
     [HttpPost("add")]
     public async Task<IActionResult> Add(ProductDTO productDto)
     {
         _productRepository.Add(productDto);
         return Ok();
     }
-
+    
+    [Authorize]
     [HttpPut("update/{id}")]
     public async Task<IActionResult> Update(int id, ProductDTO productDto)
     {
@@ -51,6 +54,7 @@ public class ProductController:ControllerBase
         return NotFound();
     }
 
+    [Authorize]
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> Delete(int id)
     {
